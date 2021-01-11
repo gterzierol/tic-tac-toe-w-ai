@@ -4,26 +4,81 @@
   box-sizing: border-box;
 }
 
+
 body {
-  background-color: black;
-  color: white;
+  background-color: #fce5a4;
+  color: #404040;
   font-family: "Roboto", sans-serif;
   display: flex;
-  /* align-items: center; */
   justify-content: center;
+  align-items: center;
   min-height: 100vh;
   padding: 2rem;
+}
+
+.App{
+  display: flex;
+  flex-direction: row;
+}
+.player{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 250px;
+  height: 75px;
+  margin-right: 10px;
+  border-radius: 10px;
+  background-color: #6BA292;
+  animation-name: example;
+  animation-duration: 0.2s;
+  animation-play-state: paused;
+  /* animation-play-state: paused; */
+}
+.active{
+  animation-play-state: running;
+
+}
+.title{
+  width: 100%;
+  display: flex;
+  justify-content: center;
+
+}
+
+@keyframes example {
+  from{
+    transform: rotate(0deg);
+  }
+  to{
+    transform: rotate(360deg);
+  }
+
 }
 
 h1 {
   margin: 2rem;
 }
+.game-container{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.container{
+  display: flex;
+  flex-direction: row;
+}
+
+.board-container{
+  display: flex;
+  justify-content: center
+}
 
 .board {
-  border: 1rem solid #ff652f;
-  background: #ff652f;
-  width: 500px;
-  height: 500px;
+  border: 1rem solid #6BA292;
+  border-radius: 20px;
+  background: #6BA292;
+  width: 350px;
+  height: 350px;
   display: grid;
   grid-template: repeat(3, 1fr) / repeat(3, 1fr);
   gap: 1rem;
@@ -33,21 +88,16 @@ h1 {
   background: #272727;
   border: none;
   font-size: 5rem;
-  /* font-weight: 800; */
   cursor: pointer;
   outline: none;
-}
-
-.X {
-  color: red;
-}
-.O {
-  color: green;
+  /* color:#FFdc7c */
+  color:white
 }
 
 .info-wrapper {
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
+  width: 250px;
 }
 
 h3 {
@@ -62,6 +112,8 @@ li {
   background: #272727;
   color: white;
   border: none;
+  border-radius: 5px;
+  height: 33px;
   outline: none;
   cursor: pointer;
   padding: 0.5rem;
