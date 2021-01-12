@@ -32,7 +32,6 @@ body {
   animation-name: example;
   animation-duration: 0.2s;
   animation-play-state: paused;
-  /* animation-play-state: paused; */
 }
 .active{
   animation-play-state: running;

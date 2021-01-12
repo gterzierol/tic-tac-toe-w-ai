@@ -1,6 +1,8 @@
 import React, { useState } from "react";
-import { calculateWinner } from "./Helper";
+import { calculateWinner, availableSquares,defineEmptySquares } from "./Helper";
 import Board from "./Board";
+
+let squares = [];
 
 const Game = () => {
     const [history, setHistory] = useState([Array(9).fill(null)]);
@@ -8,19 +10,66 @@ const Game = () => {
     const [xIsNext, setXIsNext] = useState(true);
     const winner = calculateWinner(history[stepNumber]);
     const XO = xIsNext ? "X" : "O";
+    let isTie = false;
+    
 
+
+    const findRandomMove = (squares) => {
+        console.log(squares)
+        console.log('findRandomMove yapıyorum')
+        // const emptySquares = availableSquares(squares);
+        const emptySquareIndexes = defineEmptySquares(squares); 
+        console.log(emptySquareIndexes)
+
+        if (emptySquareIndexes.length > 0) {
+            const randomMove = Math.floor(Math.random() * emptySquareIndexes.length);
+
+            return emptySquareIndexes[randomMove];
+        }
+
+        return null;
+    };
+
+
+    const aiMove = (player) => {
+        if (player === "X") return;
+        let index = findRandomMove(squares);
+        
+        if (availableSquares(squares).length !== 0) {
+            console.log("boş kolonlar hala var O yüzden işlemimi yapıyorum");
+
+            const historyPoint = history.slice(0, stepNumber + 1);
+            const current = historyPoint[stepNumber];
+            squares = [...current];
+            
+            if (squares[index] || winner) return aiMove(XO);
+            
+            squares[index] = XO;
+            setHistory([...historyPoint, squares]);
+            setStepNumber(historyPoint.length);
+            setXIsNext(!xIsNext);
+            console.log(squares + "   AI'ın hamlesinden sonraki mevcut board   ")
+        }
+    };
+    
     const handleClick = (i) => {
         const historyPoint = history.slice(0, stepNumber + 1);
         const current = historyPoint[stepNumber];
-        const squares = [...current];
-
-        if (squares[i]|| winner) return;
-
+        squares = [...current];
+        if (squares[i] || winner) return;
+        
         squares[i] = XO;
         setHistory([...historyPoint, squares]);
         setStepNumber(historyPoint.length);
         setXIsNext(!xIsNext);
+
+        console.log(squares +'   handleClick sonrası mevcut board')
     };
+    
+    aiMove(XO)
+    
+
+    
 
     const jumpTo = (step) => {
         setStepNumber(step);
@@ -44,11 +93,11 @@ const Game = () => {
                     <h1>React Tic Tac Toe Game</h1>
                 </div>
                 <div className="container">
-                    <div className={winner ? 'player active': 'player'}>
+                    <div className={winner ? "player active" : "player"}>
                         <h3>
                             {winner
                                 ? "Winner => " + winner
-                                : "Next Player: " + XO}
+                                : "Next Player: " + XO || (isTie && "TIE")}
                         </h3>
                     </div>
 
