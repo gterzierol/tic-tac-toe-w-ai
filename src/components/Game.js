@@ -1,5 +1,9 @@
 import React, { useState } from "react";
-import { calculateWinner, availableSquares,defineEmptySquares } from "./Helper";
+import {
+    calculateWinner,
+    availableSquares,
+    defineEmptySquares,
+} from "./Helper";
 import Board from "./Board";
 
 let squares = [];
@@ -11,65 +15,49 @@ const Game = () => {
     const winner = calculateWinner(history[stepNumber]);
     const XO = xIsNext ? "X" : "O";
     let isTie = false;
-    
-
 
     const findRandomMove = (squares) => {
-        console.log(squares)
-        console.log('findRandomMove yapıyorum')
-        // const emptySquares = availableSquares(squares);
-        const emptySquareIndexes = defineEmptySquares(squares); 
-        console.log(emptySquareIndexes)
-
+        const emptySquareIndexes = defineEmptySquares(squares);
         if (emptySquareIndexes.length > 0) {
-            const randomMove = Math.floor(Math.random() * emptySquareIndexes.length);
-
+            const randomMove = Math.floor(
+                Math.random() * emptySquareIndexes.length
+            );
             return emptySquareIndexes[randomMove];
         }
-
         return null;
     };
 
-
     const aiMove = (player) => {
         if (player === "X") return;
-        let index = findRandomMove(squares);
-        
-        if (availableSquares(squares).length !== 0) {
-            console.log("boş kolonlar hala var O yüzden işlemimi yapıyorum");
 
+        let index = findRandomMove(squares);
+        if (availableSquares(squares).length !== 0) {
             const historyPoint = history.slice(0, stepNumber + 1);
             const current = historyPoint[stepNumber];
             squares = [...current];
-            
+
             if (squares[index] || winner) return aiMove(XO);
-            
+
             squares[index] = XO;
             setHistory([...historyPoint, squares]);
             setStepNumber(historyPoint.length);
             setXIsNext(!xIsNext);
-            console.log(squares + "   AI'ın hamlesinden sonraki mevcut board   ")
         }
     };
-    
+
     const handleClick = (i) => {
         const historyPoint = history.slice(0, stepNumber + 1);
         const current = historyPoint[stepNumber];
         squares = [...current];
         if (squares[i] || winner) return;
-        
+
         squares[i] = XO;
         setHistory([...historyPoint, squares]);
         setStepNumber(historyPoint.length);
         setXIsNext(!xIsNext);
-
-        console.log(squares +'   handleClick sonrası mevcut board')
     };
-    
-    aiMove(XO)
-    
 
-    
+    aiMove(XO);
 
     const jumpTo = (step) => {
         setStepNumber(step);
