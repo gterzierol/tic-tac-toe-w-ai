@@ -36,7 +36,61 @@ export function defineEmptySquares(currentBoard) {
     return emptyElements;
 }
 
-export function minimax(squares) {}
+let scores= {
+    X: 10,
+    O: -10,
+    tie:0
+}
+
+export function bestMove(squares,depth, isMaximizing, human, ai) {
+    let bestScore = -Infinity;
+    let move;
+    for (let i = 0; i < 9; i++) {
+    if(squares[i] === null){
+        squares[i] = ai;
+        let score = minimax(squares, 0, false, human, ai);
+        squares[i] = null;
+        if(score > bestScore){
+            move = i
+        }
+    }        
+    }
+    return move
+}
+
+export function minimax(squares,depth, isMaximizing, human, ai) {
+    let result = calculateWinner(squares)
+
+    if(result !== null){
+        return scores[result]
+    }
+    if(isMaximizing){
+        let bestScore = Infinity;
+        for (let i = 0; i < 9; i++) {
+            if(squares[i] === null){
+                squares[i] = ai
+                let score = minimax(squares,depth + 1, false, ai, human)
+                squares[i] = null
+                bestScore = Math.max(score, bestScore)
+            }            
+        }
+        return bestScore
+    }else{
+        let bestScore = Infinity
+        for (let i = 0; i < 9; i++) {
+            if(squares[i]=== null){
+                squares[i] = human;
+                let score = minimax(squares, depth + 1, true, ai, human)
+                squares[i] = null;
+                bestScore = Math.min(score, bestScore)
+            }
+            
+        }
+        return bestScore
+
+    }
+
+}
 
 //eğer xIsNext === 'O' ise aiMove() çalışsın ve ai seçimini yapsın. yaptığı seçimde handleClick içerisinde yazılı olan square  [i]||winner kontrolü yapılsın.
 //aiMove() açığırıldığında xIsNext kontrolü tekrar gerçekleştirilsin (belki burası kaldırılabilir.)
