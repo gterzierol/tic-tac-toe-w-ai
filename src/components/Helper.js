@@ -23,9 +23,7 @@ export function calculateWinner(squares) {
     }
     return null;
 }
-export function availableSquares(currentBoard) {
-    return currentBoard.filter((s) => s !== "O" && s !== "X");
-}
+
 
 export function defineEmptySquares(currentBoard) {
     let emptyElements = currentBoard
@@ -36,59 +34,54 @@ export function defineEmptySquares(currentBoard) {
     return emptyElements;
 }
 
-let scores= {
-    X: 10,
-    O: -10,
-    tie:0
-}
 
-export function bestMove(squares,depth, isMaximizing, human, ai) {
-    let bestScore = -Infinity;
-    let move;
-    for (let i = 0; i < 9; i++) {
-    if(squares[i] === null){
-        squares[i] = ai;
-        let score = minimax(squares, 0, false, human, ai);
-        squares[i] = null;
-        if(score > bestScore){
-            move = i
-        }
-    }        
+let moves = [];
+
+export function minimax(squares, player) {
+    //find empty array indexes
+    let availSquares = defineEmptySquares(squares);
+
+    //Base
+    if (calculateWinner(squares) === "X") { return { evaluation: -10 }; } 
+    else if (calculateWinner(squares) === "O") { return { evaluation: 10 }; } 
+    else if (availSquares.length === 0) { return { evaluation: 0 }; }
+    
+    
+    for(let i = 0; i< availSquares.length; i++){
+        let id = availSquares[i];
+        let move = {};
+        move.id = id;
+        let savedBoardSpace = squares[id];
+        squares[id] = player
+
+        
+        if(player === 'O'){move.evaluation = minimax(squares, 'X').evaluation}
+        else{move.evaluation = minimax(squares, 'O').evaluation}
+        squares[id] = savedBoardSpace
+        moves.push(move);
     }
-    return move
-}
-
-export function minimax(squares,depth, isMaximizing, human, ai) {
-    let result = calculateWinner(squares)
-
-    if(result !== null){
-        return scores[result]
-    }
-    if(isMaximizing){
-        let bestScore = Infinity;
-        for (let i = 0; i < 9; i++) {
-            if(squares[i] === null){
-                squares[i] = ai
-                let score = minimax(squares,depth + 1, false, ai, human)
-                squares[i] = null
-                bestScore = Math.max(score, bestScore)
-            }            
-        }
-        return bestScore
-    }else{
-        let bestScore = Infinity
-        for (let i = 0; i < 9; i++) {
-            if(squares[i]=== null){
-                squares[i] = human;
-                let score = minimax(squares, depth + 1, true, ai, human)
-                squares[i] = null;
-                bestScore = Math.min(score, bestScore)
+    
+    let bestMove;
+    if( player === 'O'){
+        let bestEvaluation = -Infinity;
+            for(let i = 0; i < moves.length; i++){
+                if (moves[i].evaluation >bestEvaluation){
+                    bestEvaluation = moves[i].evaluation;
+                    bestMove = moves[i];
+                }
             }
-            
+    }else{
+        let bestEvaluation = +Infinity;
+        for(let i = 0; i < moves.length; i++){
+            if(moves[i].evaluation < bestEvaluation){
+                bestEvaluation = moves[i].evaluation;
+                bestMove = moves[i]
+                
+            }
         }
-        return bestScore
-
     }
+    return bestMove;
+
 
 }
 
@@ -103,4 +96,11 @@ export function minimax(squares,depth, isMaximizing, human, ai) {
     3- 
     --- bilgisayarın hamlesinin içeriğide handleClick ile birebir işlemleri gerçekleştirecek
     --- bir fark olacak, öncelikle hangi boş kareler mevcut onlar bulunacak eğer boş alan kalmamışsa Beraberlik ilan edilecek kalmışsa, onlar bulunduktan sonra, bu kalan boş kareler içerisinde seçim yapması sağlanacak
+    
+    
+    minMax algoritms
+
+    mevcut array'le kontrol yap ve bu kontrol
+    mevcut array'ı gönder, bunlardan boş slotlar neresiyle onların indexlerinin içerdiği bir array çıkart.
+
     */

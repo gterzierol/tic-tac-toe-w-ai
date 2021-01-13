@@ -1,9 +1,5 @@
 import React, { useState } from "react";
-import {
-    calculateWinner,
-    availableSquares,
-    defineEmptySquares,
-} from "./Helper";
+import { calculateWinner, defineEmptySquares, minimax } from "./Helper";
 import Board from "./Board";
 
 let squares = [];
@@ -16,27 +12,50 @@ const Game = () => {
     const XO = xIsNext ? "X" : "O";
     let isTie = false;
 
-    const findRandomMove = (squares) => {
-        const emptySquareIndexes = defineEmptySquares(squares);
-        if (emptySquareIndexes.length > 0) {
-            const randomMove = Math.floor(
-                Math.random() * emptySquareIndexes.length
-            );
-            return emptySquareIndexes[randomMove];
-        }
-        return null;
-    };
 
+
+    ///AI Picker
     const aiMove = (player) => {
         if (player === "X") return;
 
-        let index = findRandomMove(squares);
-        if (availableSquares(squares).length !== 0) {
+        if (defineEmptySquares(history[stepNumber]).length !== 0) {
             const historyPoint = history.slice(0, stepNumber + 1);
             const current = historyPoint[stepNumber];
             squares = [...current];
+            
+            let index = minimax(squares);
+            if (squares[index.id] || winner) return;
 
-            if (squares[index] || winner) return aiMove(XO);
+            squares[index.id] = player;
+            setHistory([...historyPoint, squares]);
+            setStepNumber(historyPoint.length);
+            setXIsNext(!xIsNext);
+        }
+    }
+
+
+    ///Random Picker!
+    const RandomAiMove =  (player) => {
+        if (player === "X") return;
+        //define random move
+        const findRandomMove = (squares) => {
+            const emptySquareIndexes = defineEmptySquares(squares);
+            if (emptySquareIndexes.length > 0) {
+                const randomMove = Math.floor(
+                    Math.random() * emptySquareIndexes.length
+                );
+                return emptySquareIndexes[randomMove];
+            }
+            return null;
+        };
+
+        if (defineEmptySquares(history[stepNumber]).length !== 0) {
+            const historyPoint = history.slice(0, stepNumber + 1);
+            const current = historyPoint[stepNumber];
+            squares = [...current];
+            
+            let index = findRandomMove(squares);
+            if (squares[index] || winner) return;
 
             squares[index] = XO;
             setHistory([...historyPoint, squares]);
@@ -45,8 +64,12 @@ const Game = () => {
         }
     };
 
+    
     const handleClick = (i) => {
+        console.log(history);
+
         const historyPoint = history.slice(0, stepNumber + 1);
+        console.log(historyPoint);
         const current = historyPoint[stepNumber];
         squares = [...current];
         if (squares[i] || winner) return;
@@ -55,9 +78,11 @@ const Game = () => {
         setHistory([...historyPoint, squares]);
         setStepNumber(historyPoint.length);
         setXIsNext(!xIsNext);
-    };
 
+    };
     aiMove(XO);
+
+
 
     const jumpTo = (step) => {
         setStepNumber(step);
