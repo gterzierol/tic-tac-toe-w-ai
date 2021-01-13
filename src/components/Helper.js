@@ -36,19 +36,18 @@ export const findRandomMove = (squares) => {
 };
 
 export function defineEmptySquares(currentBoard) {
-    let emptyElements = currentBoard
+    let emptyElements = [] 
+    currentBoard
         .map((item, index) => {
-            return !item ? index : false;
-        })
-        .filter(Boolean);
+            !item && emptyElements.push(index);
+            return index;
+        });
     return emptyElements;
 }
 
 export function minimax(squares, player) {
     //find empty array indexes
     let availSquares = defineEmptySquares(squares);
-
-    //Base
     if (calculateWinner(squares) === "X") {
         return { evaluation: -10 };
     } else if (calculateWinner(squares) === "O") {
@@ -56,9 +55,7 @@ export function minimax(squares, player) {
     } else if (availSquares.length === 0) {
         return { evaluation: 0 };
     }
-
     let moves = [];
-
     for (let i = 0; i < availSquares.length; i++) {
         
         let id = availSquares[i];
@@ -71,11 +68,9 @@ export function minimax(squares, player) {
         } else {
             move.evaluation = minimax(squares, "O").evaluation;
         }
-
         squares[id] = savedBoardSpace;
         moves.push(move);
     }
-
     let bestMove;
     if (player === "O") {
         let bestEvaluation = -Infinity;

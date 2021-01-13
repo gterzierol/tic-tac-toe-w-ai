@@ -23,14 +23,13 @@ const Game = () => {
 
         if (defineEmptySquares(history[stepNumber]).length !== 0) {
             const historyPoint = history.slice(0, stepNumber + 1);
-            console.log(historyPoint)
             const current = historyPoint[stepNumber];
             squares = [...current];
-            console.log(squares)
-
+            console.log(defineEmptySquares(squares))
+            
             let index = minimax(squares, XO);
             if (squares[index.id] || winner) return;
-
+            console.log(index.id)
             squares[index.id] = XO;
             setHistory([...historyPoint, squares]);
             setStepNumber(historyPoint.length);
@@ -70,7 +69,9 @@ const Game = () => {
     };
 
     useEffect(() => {
-        aiMove();
+        setTimeout(() => {
+            aiMove();
+        }, 500);
     }, [XO]);
 
 

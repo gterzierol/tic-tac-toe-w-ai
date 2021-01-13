@@ -29,12 +29,10 @@ body {
   margin-right: 10px;
   border-radius: 10px;
   background-color: #6BA292;
-  animation-name: example;
   animation-duration: 0.2s;
-  animation-play-state: paused;
 }
 .active{
-  animation-play-state: running;
+  animation-name: example;
 
 }
 .title{
