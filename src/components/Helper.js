@@ -24,6 +24,16 @@ export function calculateWinner(squares) {
     return null;
 }
 
+export const findRandomMove = (squares) => {
+    const emptySquareIndexes = defineEmptySquares(squares);
+    if (emptySquareIndexes.length > 0) {
+        const randomMove = Math.floor(
+            Math.random() * emptySquareIndexes.length
+        );
+        return emptySquareIndexes[randomMove];
+    }
+    return null;
+};
 
 export function defineEmptySquares(currentBoard) {
     let emptyElements = currentBoard
@@ -34,55 +44,60 @@ export function defineEmptySquares(currentBoard) {
     return emptyElements;
 }
 
-
-let moves = [];
-
 export function minimax(squares, player) {
     //find empty array indexes
     let availSquares = defineEmptySquares(squares);
 
     //Base
-    if (calculateWinner(squares) === "X") { return { evaluation: -10 }; } 
-    else if (calculateWinner(squares) === "O") { return { evaluation: 10 }; } 
-    else if (availSquares.length === 0) { return { evaluation: 0 }; }
-    
-    
-    for(let i = 0; i< availSquares.length; i++){
+    if (calculateWinner(squares) === "X") {
+        return { evaluation: -10 };
+    } else if (calculateWinner(squares) === "O") {
+        return { evaluation: 10 };
+    } else if (availSquares.length === 0) {
+        return { evaluation: 0 };
+    }
+
+    let moves = [];
+
+    for (let i = 0; i < availSquares.length; i++) {
+        
         let id = availSquares[i];
         let move = {};
         move.id = id;
         let savedBoardSpace = squares[id];
-        squares[id] = player
+        squares[id] = player;
+        if (player === "O") {
+            move.evaluation = minimax(squares, "X").evaluation;
+        } else {
+            move.evaluation = minimax(squares, "O").evaluation;
+        }
 
-        
-        if(player === 'O'){move.evaluation = minimax(squares, 'X').evaluation}
-        else{move.evaluation = minimax(squares, 'O').evaluation}
-        squares[id] = savedBoardSpace
+        squares[id] = savedBoardSpace;
         moves.push(move);
     }
-    
+
     let bestMove;
-    if( player === 'O'){
+    if (player === "O") {
         let bestEvaluation = -Infinity;
-            for(let i = 0; i < moves.length; i++){
-                if (moves[i].evaluation >bestEvaluation){
-                    bestEvaluation = moves[i].evaluation;
-                    bestMove = moves[i];
-                }
-            }
-    }else{
-        let bestEvaluation = +Infinity;
-        for(let i = 0; i < moves.length; i++){
-            if(moves[i].evaluation < bestEvaluation){
+
+        for (let i = 0; i < moves.length; i++) {
+            if (moves[i].evaluation > bestEvaluation) {
                 bestEvaluation = moves[i].evaluation;
-                bestMove = moves[i]
-                
+                bestMove = moves[i];
+            }
+        }
+    } else {
+        let bestEvaluation = +Infinity;
+
+        for (let i = 0; i < moves.length; i++) {
+            if (moves[i].evaluation < bestEvaluation) {
+                bestEvaluation = moves[i].evaluation;
+
+                bestMove = moves[i];
             }
         }
     }
     return bestMove;
-
-
 }
 
 //eğer xIsNext === 'O' ise aiMove() çalışsın ve ai seçimini yapsın. yaptığı seçimde handleClick içerisinde yazılı olan square  [i]||winner kontrolü yapılsın.

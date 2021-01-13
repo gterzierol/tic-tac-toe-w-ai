@@ -10,7 +10,7 @@ const Board = ({ squares, onClick }) => {
                         key={i}
                         value={square}
                         onClick={() => onClick(i)}
-                    ></Square>
+                    />
                 ))}
             </div>
         </div>

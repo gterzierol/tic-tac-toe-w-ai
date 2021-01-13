@@ -1,5 +1,10 @@
-import React, { useState } from "react";
-import { calculateWinner, defineEmptySquares, minimax } from "./Helper";
+import React, { useEffect, useState } from "react";
+import {
+    calculateWinner,
+    defineEmptySquares,
+    minimax,
+    findRandomMove,
+} from "./Helper";
 import Board from "./Board";
 
 let squares = [];
@@ -7,69 +12,53 @@ let squares = [];
 const Game = () => {
     const [history, setHistory] = useState([Array(9).fill(null)]);
     const [stepNumber, setStepNumber] = useState(0);
-    const [xIsNext, setXIsNext] = useState(true);
+    const [XO, setXO] = useState("X");
     const winner = calculateWinner(history[stepNumber]);
-    const XO = xIsNext ? "X" : "O";
     let isTie = false;
 
-
-
     ///AI Picker
-    const aiMove = (player) => {
-        if (player === "X") return;
+    const aiMove = () => {
+        if (XO === "X") return;
+        console.log("burası AI burası yapayzeka ===> ", XO);
 
         if (defineEmptySquares(history[stepNumber]).length !== 0) {
             const historyPoint = history.slice(0, stepNumber + 1);
+            console.log(historyPoint)
             const current = historyPoint[stepNumber];
             squares = [...current];
-            
-            let index = minimax(squares);
+            console.log(squares)
+
+            let index = minimax(squares, XO);
             if (squares[index.id] || winner) return;
 
-            squares[index.id] = player;
+            squares[index.id] = XO;
             setHistory([...historyPoint, squares]);
             setStepNumber(historyPoint.length);
-            setXIsNext(!xIsNext);
-        }
-    }
-
-
-    ///Random Picker!
-    const RandomAiMove =  (player) => {
-        if (player === "X") return;
-        //define random move
-        const findRandomMove = (squares) => {
-            const emptySquareIndexes = defineEmptySquares(squares);
-            if (emptySquareIndexes.length > 0) {
-                const randomMove = Math.floor(
-                    Math.random() * emptySquareIndexes.length
-                );
-                return emptySquareIndexes[randomMove];
-            }
-            return null;
-        };
-
-        if (defineEmptySquares(history[stepNumber]).length !== 0) {
-            const historyPoint = history.slice(0, stepNumber + 1);
-            const current = historyPoint[stepNumber];
-            squares = [...current];
-            
-            let index = findRandomMove(squares);
-            if (squares[index] || winner) return;
-
-            squares[index] = XO;
-            setHistory([...historyPoint, squares]);
-            setStepNumber(historyPoint.length);
-            setXIsNext(!xIsNext);
+            setXO("X");
         }
     };
 
-    
-    const handleClick = (i) => {
-        console.log(history);
+    ///Random Picker!
+    // const RandomAiMove =  (player) => {
+    //     if (player === "X") return;
+    //     //define random move
 
+    //     if (defineEmptySquares(history[stepNumber]).length !== 0) {
+    //         const historyPoint = history.slice(0, stepNumber + 1);
+    //         const current = historyPoint[stepNumber];
+    //         squares = [...current];
+
+    //         let index = findRandomMove(squares);
+    //         if (squares[index] || winner) return;
+
+    //         squares[index] = XO;
+    //         setHistory([...historyPoint, squares]);
+    //         setStepNumber(historyPoint.length);
+    //         setXIsNext(!xIsNext);
+    //     }
+    // };
+    const handleClick = (i) => {
         const historyPoint = history.slice(0, stepNumber + 1);
-        console.log(historyPoint);
         const current = historyPoint[stepNumber];
         squares = [...current];
         if (squares[i] || winner) return;
@@ -77,16 +66,17 @@ const Game = () => {
         squares[i] = XO;
         setHistory([...historyPoint, squares]);
         setStepNumber(historyPoint.length);
-        setXIsNext(!xIsNext);
-
+        setXO(XO === "O" ? "X" : "O");
     };
-    aiMove(XO);
 
+    useEffect(() => {
+        aiMove();
+    }, [XO]);
 
 
     const jumpTo = (step) => {
         setStepNumber(step);
-        setXIsNext(step % 2 === 0);
+        setXO(step % 2 === 0 ? "X" : "O");
     };
 
     const renderMoves = () =>
