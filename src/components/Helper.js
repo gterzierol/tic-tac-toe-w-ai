@@ -12,12 +12,9 @@ export function calculateWinner(squares) {
 
     for (let i = 0; i < lines.length; i++) {
         const [a, b, c] = lines[i];
-
-        if (
-            squares[a] &&
-            squares[a] === squares[b] &&
-            squares[a] === squares[c]
-        ) {
+        
+        if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
+            
             return squares[a];
         }
     }
@@ -94,23 +91,3 @@ export function minimax(squares, player) {
     }
     return bestMove;
 }
-
-//eğer xIsNext === 'O' ise aiMove() çalışsın ve ai seçimini yapsın. yaptığı seçimde handleClick içerisinde yazılı olan square  [i]||winner kontrolü yapılsın.
-//aiMove() açığırıldığında xIsNext kontrolü tekrar gerçekleştirilsin (belki burası kaldırılabilir.)
-//BestMove için availableSquares belilrlenmeli board.filter(s=> typeof  == null)
-//tieCheck Yap if(emptySquares().lentgh === 0)
-
-/*
-    1- handleClick yapıldıktan sonra mevcut handle click func işleyecek.
-    2- handleClick bittikten sonra sıra bilgisayara gelecek ve onun hamlesini içeren fonksiyon çalışacak
-    3- 
-    --- bilgisayarın hamlesinin içeriğide handleClick ile birebir işlemleri gerçekleştirecek
-    --- bir fark olacak, öncelikle hangi boş kareler mevcut onlar bulunacak eğer boş alan kalmamışsa Beraberlik ilan edilecek kalmışsa, onlar bulunduktan sonra, bu kalan boş kareler içerisinde seçim yapması sağlanacak
-    
-    
-    minMax algoritms
-
-    mevcut array'le kontrol yap ve bu kontrol
-    mevcut array'ı gönder, bunlardan boş slotlar neresiyle onların indexlerinin içerdiği bir array çıkart.
-
-    */

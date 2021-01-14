@@ -1,38 +1,31 @@
 import React, { useEffect, useState } from "react";
-import {
-    calculateWinner,
-    defineEmptySquares,
-    minimax,
-    findRandomMove,
-} from "./Helper";
+import { connect } from 'react-redux';
+import { calculateWinner,defineEmptySquares, minimax } from "./Helper";
 import Board from "./Board";
+import {historyRegister, stepNumberRegister} from '../store/gameAction';
 
 let squares = [];
 
-const Game = () => {
-    const [history, setHistory] = useState([Array(9).fill(null)]);
-    const [stepNumber, setStepNumber] = useState(0);
+const Game = (props) => {
     const [XO, setXO] = useState("X");
-    const winner = calculateWinner(history[stepNumber]);
-    let isTie = false;
+    
+    let winner = calculateWinner(props.history[props.stepNumber]);
+    let isDrawn = (defineEmptySquares(props.history[props.stepNumber]).length === 0)
 
     ///AI Picker
     const aiMove = () => {
         if (XO === "X") return;
-        console.log("burası AI burası yapayzeka ===> ", XO);
 
-        if (defineEmptySquares(history[stepNumber]).length !== 0) {
-            const historyPoint = history.slice(0, stepNumber + 1);
-            const current = historyPoint[stepNumber];
+        if (defineEmptySquares(props.history[props.stepNumber]).length !== 0) {
+            const historyPoint = props.history.slice(0, props.stepNumber + 1);
+            const current = historyPoint[props.stepNumber];
             squares = [...current];
-            console.log(defineEmptySquares(squares))
             
             let index = minimax(squares, XO);
             if (squares[index.id] || winner) return;
-            console.log(index.id)
             squares[index.id] = XO;
-            setHistory([...historyPoint, squares]);
-            setStepNumber(historyPoint.length);
+            props.dispatch(historyRegister([...historyPoint, squares]));
+            props.dispatch(stepNumberRegister(historyPoint.length));
             setXO("X");
         }
     };
@@ -56,32 +49,36 @@ const Game = () => {
     //         setXIsNext(!xIsNext);
     //     }
     // };
-    const handleClick = (i) => {
-        const historyPoint = history.slice(0, stepNumber + 1);
-        const current = historyPoint[stepNumber];
-        squares = [...current];
-        if (squares[i] || winner) return;
 
+
+    const handleClick = (i) => {
+        const historyPoint = props.history.slice(0, props.stepNumber + 1);
+        const current = historyPoint[props.stepNumber];
+        squares = [...current];
+        console.log(winner)
+        if (squares[i] || winner) return;
+        console.log(winner)
         squares[i] = XO;
-        setHistory([...historyPoint, squares]);
-        setStepNumber(historyPoint.length);
+        props.dispatch(historyRegister([...historyPoint], squares))
+        props.dispatch(stepNumberRegister(historyPoint.length));
+
         setXO(XO === "O" ? "X" : "O");
     };
 
+    //=>  aiMove func depends on XO's state changes. When XO state changed,  that means when human or computer play their turn, XO statement changes for the determine to who is the next Player
     useEffect(() => {
-        setTimeout(() => {
-            aiMove();
-        }, 500);
+        setTimeout(() =>  aiMove(), 500);
     }, [XO]);
 
-
+    //=> when triggered this func, the stepNumber state is changes. This change is define which game state will  you return.
     const jumpTo = (step) => {
-        setStepNumber(step);
+        props.dispatch(stepNumberRegister(step))
         setXO(step % 2 === 0 ? "X" : "O");
     };
 
+    //=> renderMoves func creates step buttons
     const renderMoves = () =>
-        history.map((_step, move) => {
+        props.history.map((_step, move) => {
             const destination = move ? `go to move #${move}` : "go to start";
             return (
                 <li key={move}>
@@ -97,16 +94,15 @@ const Game = () => {
                     <h1>React Tic Tac Toe Game</h1>
                 </div>
                 <div className="container">
-                    <div className={winner ? "player active" : "player"}>
+                    <div className={(winner || isDrawn) ? "player active" : "player"}>
                         <h3>
-                            {winner
-                                ? "Winner => " + winner
-                                : "Next Player: " + XO || (isTie && "TIE")}
+                            {isDrawn ?  'DRAWN' : winner ? "Winner => " + winner : "Next Player: " + XO}
+                            
                         </h3>
                     </div>
 
                     <Board
-                        squares={history[stepNumber]}
+                        squares={props.history[props.stepNumber]}
                         onClick={handleClick}
                     />
                     <div className="info-wrapper">
@@ -121,4 +117,10 @@ const Game = () => {
     );
 };
 
-export default Game;
+const mapStateToProps = (state) => {
+    return{
+        history: state.history,
+        stepNumber: state.stepNumber
+    }
+}
+export default connect(mapStateToProps)(Game);
