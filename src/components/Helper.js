@@ -12,9 +12,7 @@ export function calculateWinner(squares) {
 
     for (let i = 0; i < lines.length; i++) {
         const [a, b, c] = lines[i];
-        
         if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
-            
             return squares[a];
         }
     }
@@ -52,6 +50,7 @@ export function minimax(squares, player) {
     } else if (availSquares.length === 0) {
         return { evaluation: 0 };
     }
+
     let moves = [];
     for (let i = 0; i < availSquares.length; i++) {
         
@@ -68,10 +67,10 @@ export function minimax(squares, player) {
         squares[id] = savedBoardSpace;
         moves.push(move);
     }
+
     let bestMove;
     if (player === "O") {
         let bestEvaluation = -Infinity;
-
         for (let i = 0; i < moves.length; i++) {
             if (moves[i].evaluation > bestEvaluation) {
                 bestEvaluation = moves[i].evaluation;
@@ -80,7 +79,6 @@ export function minimax(squares, player) {
         }
     } else {
         let bestEvaluation = +Infinity;
-
         for (let i = 0; i < moves.length; i++) {
             if (moves[i].evaluation < bestEvaluation) {
                 bestEvaluation = moves[i].evaluation;

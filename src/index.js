@@ -9,7 +9,6 @@ import Reducer from './store/gameReducer';
 
 const store = createStore(Reducer);
 
-
 ReactDOM.render(
   <Provider store={store}>
     <App />

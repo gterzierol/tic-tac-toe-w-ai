@@ -1,0 +1,1 @@
+export const URL = 'http://140.82.59.206/gameLogger.php'
