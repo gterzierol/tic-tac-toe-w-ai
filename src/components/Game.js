@@ -12,6 +12,7 @@ const Game = (props) => {
     let winner = calculateWinner(props.history[props.stepNumber]);
     let isDrawn = (defineEmptySquares(props.history[props.stepNumber]).length === 0)
 
+    
     ///AI Picker
     const aiMove = () => {
         if (XO === "X") return;
@@ -23,9 +24,12 @@ const Game = (props) => {
             
             let index = minimax(squares, XO);
             if (squares[index.id] || winner) return;
+            
             squares[index.id] = XO;
+            
             props.dispatch(historyRegister([...historyPoint, squares]));
             props.dispatch(stepNumberRegister(historyPoint.length));
+            
             setXO("X");
         }
     };
@@ -55,10 +59,10 @@ const Game = (props) => {
         const historyPoint = props.history.slice(0, props.stepNumber + 1);
         const current = historyPoint[props.stepNumber];
         squares = [...current];
-        console.log(winner)
+        
         if (squares[i] || winner) return;
-        console.log(winner)
         squares[i] = XO;
+
         props.dispatch(historyRegister([...historyPoint], squares))
         props.dispatch(stepNumberRegister(historyPoint.length));
 
@@ -77,8 +81,8 @@ const Game = (props) => {
     };
 
     //=> renderMoves func creates step buttons
-    const renderMoves = () =>
-        props.history.map((_step, move) => {
+    const renderMoves = () => props.history.map((_step, move) => {
+
             const destination = move ? `go to move #${move}` : "go to start";
             return (
                 <li key={move}>
@@ -97,7 +101,6 @@ const Game = (props) => {
                     <div className={(winner || isDrawn) ? "player active" : "player"}>
                         <h3>
                             {isDrawn ?  'DRAWN' : winner ? "Winner => " + winner : "Next Player: " + XO}
-                            
                         </h3>
                     </div>
 
