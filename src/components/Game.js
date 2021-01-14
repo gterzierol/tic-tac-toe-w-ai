@@ -56,7 +56,7 @@ const Game = (props) => {
         setTimeout(() =>  {
             if(playWithWho === '2 Player') return
                 aiMove(playWithWho)
-            }, 500);
+            }, 300);
     }, [XO]);
 
     //=> when triggered this func, the stepNumber state is changes. This change is define which game state will  you return.
