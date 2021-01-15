@@ -14,7 +14,7 @@ app.get('/',(req,res) => {
 app.post('/gameLogger', (req, res)=> {
     const move = req.body;
     console.log(move)
-    res.status(200).send(move)
+    res.status(200).send('logged game move successfully')
 })
 
 app.listen(port,()=>{
