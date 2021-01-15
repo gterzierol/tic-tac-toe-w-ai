@@ -54,25 +54,15 @@ const Game = (props) => {
     //=>  aiMove func depends on XO's state changes. When XO state changed,  that means when human or computer play their turn, XO statement changes for the determine to who is the next Player
     useEffect(() => {
         setTimeout(() =>  {
-            if(playWithWho === '2 Player') return
+            if(playWithWho === '2 Player' && XO === 'O') return
                 aiMove(playWithWho)
             }, 300);
     }, [XO]);
 
     //=> when triggered this func, the stepNumber state is changes. This change is define which game state will  you return.
     const jumpTo = (step) => {
-        if(step === 0){
-            props.dispatch(restartGame())
             props.dispatch(stepNumberRegister(step))
             setXO(step % 2 === 0 ? "X" : "O");
-
-        }else{
-            const historyPoint = props.history.slice(0, step + 1)
-            const current = historyPoint[step];
-            props.dispatch(stepNumberRegister(step))
-            props.dispatch(historyRegister([...historyPoint], current))
-            setXO(step % 2 === 0 ? "X" : "O");
-        }
     };
 
     //=> renderMoves func creates step buttons
@@ -116,7 +106,7 @@ const Game = (props) => {
                             (winner || isDrawn) && 
                             (<div className='endgame-container'>
                                 <div className='endgame'>{(isDrawn && 'Drawn') || (winner && "Winneerrrr! =>" + winner)}</div>
-                                <button className='endgame restart' onClick={()=> {jumpTo(0);}}>Restart Game</button>
+                                <button className='endgame restart' onClick={()=> {props.dispatch(restartGame())}}>Restart Game</button>
                             </div>)
                         }
                             <div className={(winner || isDrawn) ? "container opacity" : "container"}>
