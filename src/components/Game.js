@@ -54,7 +54,7 @@ const Game = (props) => {
     //=>  aiMove func depends on XO's state changes. When XO state changed,  that means when human or computer play their turn, XO statement changes for the determine to who is the next Player
     useEffect(() => {
         setTimeout(() =>  {
-            if(playWithWho === '2 Player' && XO === 'O') return
+            if(playWithWho === '2 Player') return
                 aiMove(playWithWho)
             }, 300);
     }, [XO]);
