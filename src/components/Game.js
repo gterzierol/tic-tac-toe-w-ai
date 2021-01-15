@@ -64,6 +64,8 @@ const Game = (props) => {
         if(step === 0){
             props.dispatch(restartGame())
             props.dispatch(stepNumberRegister(step))
+            setXO(step % 2 === 0 ? "X" : "O");
+
         }else{
             const historyPoint = props.history.slice(0, step + 1)
             const current = historyPoint[step];
