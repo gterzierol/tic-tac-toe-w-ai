@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { connect } from 'react-redux';
 import { calculateWinner,defineEmptySquares, minimax, findRandomMove } from "./Helper";
 import Board from "./Board";
-import {historyRegister, stepNumberRegister} from '../store/gameAction';
+import {historyRegister, restartGame, stepNumberRegister} from '../store/gameAction';
 import { sendMove } from '../services/request';
 
 
@@ -61,22 +61,36 @@ const Game = (props) => {
 
     //=> when triggered this func, the stepNumber state is changes. This change is define which game state will  you return.
     const jumpTo = (step) => {
-        const historyPoint = props.history.slice(0, step + 1)
-        const current = historyPoint[step];
-        
-        props.dispatch(stepNumberRegister(step))
-        props.dispatch(historyRegister([...historyPoint], current))
-        setXO(step % 2 === 0 ? "X" : "O");
+        if(step === 0){
+            props.dispatch(restartGame())
+            props.dispatch(stepNumberRegister(step))
+        }else{
+            const historyPoint = props.history.slice(0, step + 1)
+            const current = historyPoint[step];
+            props.dispatch(stepNumberRegister(step))
+            props.dispatch(historyRegister([...historyPoint], current))
+            setXO(step % 2 === 0 ? "X" : "O");
+        }
     };
 
     //=> renderMoves func creates step buttons
     const renderMoves = () => props.history.map((_step, move) => {
         const destination = move ? `go to move  #${move}` : "go to start";
-        return (
-            <li key={move}>
-                <button onClick={() => jumpTo(move)}>{destination}</button>
-            </li>
-        );
+        
+            if(move === 0){
+                return(
+                    <li key={move}>
+                        <button onClick={() => jumpTo(move)}>{destination}</button>
+                    </li>
+                )
+            }else{
+                return(
+                    <li key={move}>
+                        <button onClick={() => jumpTo(move-1)}>{destination}</button>
+                    </li>
+                )
+            }
+        
     });
 
 
@@ -113,7 +127,7 @@ const Game = (props) => {
                                 <div className="info-wrapper">
                                     <div>
                                         <h3>History</h3>
-                                        {renderMoves()}
+                                        {props.history && renderMoves()}
                                     </div>
                                 </div>
                             </div>

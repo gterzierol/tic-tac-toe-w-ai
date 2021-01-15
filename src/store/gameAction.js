@@ -16,3 +16,16 @@ export const stepNumberRegister = (stepNumber) => {
         }
     }
 }
+export const goToStep = (current) => {
+    return{
+        type: 'GO_TO_STEP',
+        payload:{
+            current
+        }
+    }
+}
+export const restartGame = () => {
+    return{
+        type:'RESTART_GAME'
+    }
+}

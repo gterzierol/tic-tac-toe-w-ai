@@ -1,3 +1,5 @@
+import { goToStep } from "./gameAction"
+
 const INITIAL_STATE = {
     history:[Array(9).fill(null)],
     stepNumber:0
@@ -14,6 +16,13 @@ const gameReducer = (state= INITIAL_STATE, action ) => {
                 ...state,
                 stepNumber: action.payload.stepNumber
             }
+        case 'GO_TO_STEP':
+            return {
+                ...state,
+                history: [...INITIAL_STATE.history, action.payload.current]
+            }
+        case 'RESTART_GAME':
+            return state = INITIAL_STATE
         default:
             return state
         }   
