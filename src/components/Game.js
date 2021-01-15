@@ -68,21 +68,11 @@ const Game = (props) => {
     //=> renderMoves func creates step buttons
     const renderMoves = () => props.history.map((_step, move) => {
         const destination = move ? `go to move  #${move}` : "go to start";
-        
-            if(move === 0){
-                return(
-                    <li key={move}>
-                        <button onClick={() => jumpTo(move)}>{destination}</button>
-                    </li>
-                )
-            }else{
-                return(
-                    <li key={move}>
-                        <button onClick={() => jumpTo(move-1)}>{destination}</button>
-                    </li>
-                )
-            }
-        
+        return(
+            <li key={move}>
+                <button onClick={() => jumpTo(move)}>{destination}</button>
+            </li>
+        )        
     });
 
 
