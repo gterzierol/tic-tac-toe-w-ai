@@ -16,12 +16,3 @@ export const stepNumberRegister = (stepNumber) => {
         }
     }
 }
-
-export const chooseDifficult = (difficult) => {
-    return{
-        type:'CHOOSE_DIFFICULT',
-        payload:{
-            difficult
-        }
-    }
-}

@@ -14,11 +14,6 @@ const gameReducer = (state= INITIAL_STATE, action ) => {
                 ...state,
                 stepNumber: action.payload.stepNumber
             }
-        case 'CHOOSE_DIFFICULT':
-            return {
-                ...state,
-                difficult: action.payload.difficult
-            }
         default:
             return state
         }   
