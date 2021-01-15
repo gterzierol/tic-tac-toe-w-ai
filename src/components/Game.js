@@ -96,7 +96,7 @@ const Game = (props) => {
                             (winner || isDrawn) && 
                             (<div className='endgame-container'>
                                 <div className='endgame'>{(isDrawn && 'Drawn') || (winner && "Winneerrrr! =>" + winner)}</div>
-                                <button className='endgame restart' onClick={()=> {props.dispatch(restartGame())}}>Restart Game</button>
+                                <button className='endgame restart' onClick={()=> {props.dispatch(restartGame());setXO('X')}}>Restart Game</button>
                             </div>)
                         }
                             <div className={(winner || isDrawn) ? "container opacity" : "container"}>
