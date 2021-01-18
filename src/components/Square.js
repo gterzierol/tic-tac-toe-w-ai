@@ -2,10 +2,8 @@ import React from 'react'
 
 
 const Square = ({value, onClick}) => {
-    const style = value ? `squares ${value}`: `squares`
-
     return(
-        <button onClick={onClick} className={style}>
+        <button onClick={onClick} className='squares'>
             {value}
         </button>
     )
